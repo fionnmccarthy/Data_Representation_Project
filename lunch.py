@@ -32,7 +32,7 @@ def login():
             # Create session data, we can access this data in other routes
             session['loggedin'] = True
             session['username'] = user['username']
-            return render_template('index2.html', username=username)
+            return render_template('lunch_choice.html', username=username)
         
         else:
             flash('Invalid Username or Password !!')
