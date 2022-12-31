@@ -42,6 +42,16 @@ class membershipDAO:
         self.closeAll()
         return newid
 
+    def create_logins(self, values):
+        cursor = self.getcursor()
+        sql="insert into login_details (username, password) values (%s,%s)"
+        cursor.execute(sql, values)
+
+        self.connection.commit()
+        newid = cursor.lastrowid
+        self.closeAll()
+        return newid
+
 
     def getAll(self):
         cursor = self.getcursor()
@@ -54,6 +64,20 @@ class membershipDAO:
             print(result)
             returnArray.append(self.convertToDictionary(result))
         
+        self.closeAll()
+        return returnArray
+
+
+    def getAllUsers(self):
+        cursor = self.getcursor()
+        sql="select * from login_details"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        returnArray = []
+        print(results)
+        for result in results:
+            print(result)
+            returnArray.append(self.convertToDictionary2(result))       
         self.closeAll()
         return returnArray
 
@@ -102,6 +126,28 @@ class membershipDAO:
         
         return item
 
+    def convertToDictionary2(self, result):
+        colnames=['id','username','password']
+        item = {}
+        
+        if result:
+            for i, colName in enumerate(colnames):
+                value = result[i]
+                item[colName] = value
+        
+        return item
+
+    def testLogin(self, values):
+        cursor = self.getcursor()
+        sql = 'SELECT * FROM login_details WHERE username = %s AND password = %s'
+        cursor.execute(sql, values)
+        results = cursor.fetchall()
+        if len(results) > 0:
+            return 1
+        else:
+            return 2
+        
+
 
     def insert_data(self):
         cursor = self.getcursor()
@@ -119,7 +165,6 @@ class membershipDAO:
         data12 = ('Sean Moloney', 'Standard', 'sm1234@live.ie')
         data13 = ('Pat Murphy', 'Standard', 'pm12@live.ie')
         data14 = ('Conor Downes', 'Gold', 'cd98@live.ie')
-
         membershipDAO.create(data)
         membershipDAO.create(data2)
         membershipDAO.create(data3)
@@ -135,9 +180,25 @@ class membershipDAO:
         membershipDAO.create(data13)
         membershipDAO.create(data14)
 
+    def insert_data_logins(self):
+        cursor = self.getcursor()
+        data = ('drtest2022', 'abcd1234')
+        data2 = ('admin1234', 'pwd0000')
+        membershipDAO.create_logins(data)
+        membershipDAO.create_logins(data2)
+
+
     def createtable(self):
         cursor = self.getcursor()
         sql="create table membership (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, name varchar(250), membership_type varchar(50), email varchar(250))"
+        cursor.execute(sql)
+
+        self.connection.commit()
+        self.closeAll()
+
+    def createtable_users(self):
+        cursor = self.getcursor()
+        sql="create table login_details (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, username varchar(50) UNIQUE, password nvarchar(50))"
         cursor.execute(sql)
 
         self.connection.commit()
@@ -162,11 +223,16 @@ membershipDAO = membershipDAO()
 
 if __name__ == "__main__":
     #membershipDAO.createdatabase()
-    membershipDAO.createtable()
-    membershipDAO.insert_data()
-    data = ('Sarah Saunders', 'Gold', 'ss1995@live.ie')
-    membershipDAO.create(data)
+    #membershipDAO.createtable()
+    #membershipDAO.insert_data()
+    #membershipDAO.createtable_users()
+    # membershipDAO.insert_data_logins()
+    #data = ('Sarah Saunders', 'Gold', 'ss1995@live.ie')
+    #membershipDAO.create(data)
     #counted_choices = membershipDAO.countchoices('Chicken Salad')
     #print (counted_choices)
+    #membershipDAO.getAllUsers()
+    #data = ('admin1234', 'pwd0000')
+    #membershipDAO.testLogin(data)
 
     print("sanity")

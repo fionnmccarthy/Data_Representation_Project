@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<link rel="stylesheet" href="https://www.w3schools.com/html/styles.css">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+        <h3 style="text-align: center">Membership types can be seen below.</h3>
+        <div id="lunch_choices" style="height:300px; width:500px; background:#000000; margin:auto">
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                </div>
+                <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="images/standard.png" class="d-block w-100" width="300" height="300">
+                    <div class="carousel-caption d-none d-md-block">
+                    <h5 style="color:black">Standard Membership</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="images/silver.jpg" class="d-block w-100" width="300" height="300">
+                    <div class="carousel-caption d-none d-md-block">
+                    <h5 style="color:red">Silver Level Membership</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="images/gold.jpg" class="d-block w-100" width="300" height="300">
+                    <div class="carousel-caption d-none d-md-block">
+                    <h5>Gold Level Membership</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="images/platinum.png" class="d-block w-100" width="300" height="300">
+                    <div class="carousel-caption d-none d-md-block">
+                    <h5 style="color:red">Platinum Level Membership</h5>
+                    </div>
+                </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>  
+        <h1>Members</h1>
+        <div> <button id="showCreateButton" onclick="showCreate()">Add New Member</button></div>
+        <div>
+            <table class="table" id="membershipTable">
+                <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>
+                            Membership Type
+                        </th>
+                        <th>Email</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+                
+            </table>
+        </div>
+        <div id='createUpdateForm' style="display: none">
+                <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Member</h2>
+                <input type="hidden" name="id"/>
+                Name <input type="text" name="name" /><br/>
+                Membership Type <input type="text" name="membership_type"/> <br/>
+                Email <input type="text" name="email"/> <br/>
+                <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+                <span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+        </div>
+    </body>
+    
+    <script>  
+            function init(){
+                populatepage()
+            }
+            function populatepage(){
+            $.ajax({
+                "url": "http://127.0.0.1:5000/memberships",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    //console.log(result);
+                    for (membership of result){
+                        addMembershipToTable(membership);
+                    }
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+
+            }  
+
+            function addMembership(membershipholder){
+                var membershiplistElement = document.getElementById('membershipTable')
+                var membertemplate = document.getElementById('template').innerHTML
+                newmembershiphtml = membertemplate.replace(/##MEMBERSHIP/g, membershipholder)
+                membershiplistElement.innerHTML += newmembershiphtml
+                
+            } 
+
+            function showCreate(){
+                document.getElementById('showCreateButton').style.display="none"
+                document.getElementById('membershipTable').style.display="none"
+                document.getElementById('createUpdateForm').style.display="block"
+
+                document.getElementById('createLabel').style.display="inline"
+                document.getElementById('updateLabel').style.display="none"
+
+                document.getElementById('doCreateButton').style.display="block"
+                document.getElementById('doUpdateButton').style.display="none"
+            }
+
+            function showViewAll(){
+                document.getElementById('showCreateButton').style.display="block"
+                document.getElementById('membershipTable').style.display="block"
+                document.getElementById('createUpdateForm').style.display="none"
+            }
+
+            function showUpdate(buttonElement){
+                document.getElementById('showCreateButton').style.display="none"
+                document.getElementById('membershipTable').style.display="none"
+                document.getElementById('createUpdateForm').style.display="block"
+
+                document.getElementById('createLabel').style.display="none"
+                document.getElementById('updateLabel').style.display="inline"
+
+                document.getElementById('doCreateButton').style.display="none"
+                document.getElementById('doUpdateButton').style.display="block"
+
+
+                var rowElement = buttonElement.parentNode.parentNode
+                
+                var membership = getMembershipFromRow(rowElement)
+                populateFormWithmembership(membership)
+            }
+
+            function doCreate(){
+                var form = document.getElementById('createUpdateForm')
+
+                var membership = {}
+            
+                membership.name = form.querySelector('input[name="name"]').value
+                membership.membership_type = form.querySelector('input[name="membership_type"]').value
+                membership.email = form.querySelector('input[name="email"]').value
+                console.log(JSON.stringify(membership))
+                createMembershipAjax(membership)
+                
+                
+            }
+            function doUpdate(){
+                var membership = getmembershipFromForm();
+                var rowElement = document.getElementById(membership.id);
+                updatemembershipAjax(membership);
+                setmembershipInRow(rowElement,membership);
+            
+                clearForm();
+                showViewAll();
+            }
+
+            function doDelete(r){
+                var tableElement = document.getElementById('membershipTable');
+                var rowElement = r.parentNode.parentNode;
+                var index = rowElement.rowIndex;
+                deletemembershipAjax(rowElement.getAttribute("id"));
+                tableElement.deleteRow(index);
+            }
+
+            function addMembershipToTable(membership){
+                var tableElement = document.getElementById('membershipTable')
+                var rowElement = tableElement.insertRow(-1)
+                rowElement.setAttribute('id',membership.id)
+                var cell1 = rowElement.insertCell(0);
+                cell1.innerHTML = membership.id
+                var cell2 = rowElement.insertCell(1);
+                cell2.innerHTML = membership.name
+                var cell3 = rowElement.insertCell(2);
+                cell3.innerHTML = membership.membership_type
+                var cell4 = rowElement.insertCell(3);
+                cell4.innerHTML = membership.email
+                var cell5 = rowElement.insertCell(4);
+                cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+                var cell6 = rowElement.insertCell(5);
+                cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+
+            }
+
+            function clearForm(){
+                var form = document.getElementById('createUpdateForm')
+
+                form.querySelector('input[name="name"]').value=''
+                form.querySelector('input[name="membership_type"]').value=''
+                form.querySelector('input[name="email"]').value=''
+            }
+
+            function getMembershipFromRow(rowElement){
+                var car ={}
+                membership.id  = rowElement.getAttribute('id')
+                membership.name = rowElement.cells[1].firstChild.textContent
+                membership.membership_type = rowElement.cells[2].firstChild.textContent
+                membership.email = rowElement.cells[3].firstChild.textContent
+                return membership
+            }
+
+            function setMembershipInRow(rowElement, membership){
+                rowElement.cells[0].firstChild.textContent= membership.id  
+                rowElement.cells[1].firstChild.textContent= membership.title 
+                rowElement.cells[2].firstChild.textContent= membership.author
+                rowElement.cells[3].firstChild.textContent= membership.price
+            }
+
+            function populateFormWithMembership(membership){
+                var form = document.getElementById('createUpdateForm')
+                form.querySelector('input[name="id"]').disabled = true
+
+                form.querySelector('input[name="id"]').value  = membership.id
+                form.querySelector('input[name="name"]').value= membership.title
+                form.querySelector('input[name="memership_type"]').value= membership.author
+                form.querySelector('input[name="email"]').value= membership.price
+                return membership
+            }
+
+            function getMembershipFromForm(){
+                var form = document.getElementById('createUpdateForm')
+                var membership = {}
+                membership.id = form.querySelector('input[name="id"]').value
+                membership.name = form.querySelector('input[name="name"]').value
+                membership.memership_type = form.querySelector('input[name="memership_type"]').value
+                membership.email = form.querySelector('input[name="email"]').value
+                console.log(JSON.stringify(membership))
+                return membership
+            }
+
+            function getAllAjax(){
+                $.ajax({
+                    "url": "http://127.0.0.1:5000/memberships",
+                    "method":"GET",
+                    "data":"",
+                    "dataType": "JSON",
+                    "success":function(result){
+                        //console.log(result);
+                        for (membership of result){
+                            addMembershipToTable(membership);
+                        }
+                        
+                    },
+                    "error":function(xhr,status,error){
+                        console.log("error: "+status+" msg:"+error);
+                    }
+                });
+
+            }
+
+            function createMembershipAjax(membership){
+                console.log(JSON.stringify(membership));
+                $.ajax({
+                    "url": "http://127.0.0.1:5000/memberships",
+                    "method":"POST",
+                    "data":JSON.stringify(membership),
+                    "dataType": "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    "success":function(result){
+                        //console.log(result);
+                        membership.id = result.id
+                        addMembershipToTable(membership)
+                        clearForm()
+                        showViewAll()
+                    },
+                    "error":function(xhr,status,error){
+                        console.log("error: "+status+" msg:"+error);
+                    }
+                });
+            }
+            function updatemembershipAjax(membership){
+                console.log(JSON.stringify(membership));
+                $.ajax({
+                    "url": "http://127.0.0.1:5000/memberships/"+encodeURI(membership.id),
+                    "method":"PUT",
+                    "data":JSON.stringify(membership),
+                    "dataType": "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    "success":function(result){
+
+                        
+                    },
+                    "error":function(xhr,status,error){
+                        console.log("error: "+status+" msg:"+error);
+                    }
+                });
+            }
+            function deletemembershipAjax(id){
+                $.ajax({
+                    "url": "http://127.0.0.1:5000/memberships/"+encodeURI(id),
+                    "method":"DELETE",
+                    "data":"",
+                    "dataType": "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    "success":function(result){
+                        
+                    },
+                    "error":function(xhr,status,error){
+                        console.log("error: "+status+" msg:"+error);
+                    }
+                });
+            }
+
+        getAllAjax();
+ 
+
+    
+    </script>
+</html>
