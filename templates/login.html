@@ -2,20 +2,25 @@
 <html>
 <link rel="stylesheet" href="https://www.w3schools.com/html/styles.css">
 <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
-<div class="login-form">
+<body>
+  <div>
+    <h2 style="text-align: center">Login area for admin of ATU Manchester United Supporters Club.</h2>
+    <p style="text-align:center;"><img src="images/standard.png" alt="Logo" width="300" height="300" ></p>
+  </div>
+  <div class="login-form">
 
-  <h2>Login to your members area.</h2>
-  
-  <form>
-    <input class="input" type="text" name="username" placeholder="Username" id="username" required>
-    <input class="input" type="password" name="password" placeholder="Password" id="password" required>
-    <button type="submit" class="button is-success">
-      Login
-    </button>
-  </form>
-  
-</div>
+    <form id="login" method="POST" action='/login'>
+      <input type="text" name="username" placeholder="Username" id="username" required>
+      <input type="password" name="password" placeholder="Password" id="password" required>
+      <button type="submit" >Login</button>
+    </form>
+    
+  </div>
+</body>
+<script>
 
+</script>
 
 </html>

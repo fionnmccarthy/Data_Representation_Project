@@ -77,7 +77,7 @@
         <div id='createUpdateForm' style="display: none">
                 <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update</span> Member</h2>
                 <input type="hidden" name="id"/>
-                Name <input type="text" name="name" /><br/>
+                Name <input type="text" name="name"/> <br/>
                 Membership Type <input type="text" name="membership_type"/> <br/>
                 Email <input type="text" name="email"/> <br/>
                 <span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
@@ -86,28 +86,6 @@
     </body>
     
     <script>  
-            function init(){
-                populatepage()
-            }
-            function populatepage(){
-            $.ajax({
-                "url": "http://127.0.0.1:5000/memberships",
-                "method":"GET",
-                "data":"",
-                "dataType": "JSON",
-                "success":function(result){
-                    //console.log(result);
-                    for (membership of result){
-                        addMembershipToTable(membership);
-                    }
-                    
-                },
-                "error":function(xhr,status,error){
-                    console.log("error: "+status+" msg:"+error);
-                }
-            });
-
-            }  
 
             function addMembership(membershipholder){
                 var membershiplistElement = document.getElementById('membershipTable')
@@ -188,16 +166,22 @@
                 var tableElement = document.getElementById('membershipTable')
                 var rowElement = tableElement.insertRow(-1)
                 rowElement.setAttribute('id',membership.id)
+                //id
                 var cell1 = rowElement.insertCell(0);
                 cell1.innerHTML = membership.id
+                //name
                 var cell2 = rowElement.insertCell(1);
                 cell2.innerHTML = membership.name
+                //membership type
                 var cell3 = rowElement.insertCell(2);
                 cell3.innerHTML = membership.membership_type
+                //email
                 var cell4 = rowElement.insertCell(3);
                 cell4.innerHTML = membership.email
+                //update button
                 var cell5 = rowElement.insertCell(4);
                 cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+                //delete button
                 var cell6 = rowElement.insertCell(5);
                 cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
 
@@ -256,7 +240,6 @@
                     "data":"",
                     "dataType": "JSON",
                     "success":function(result){
-                        //console.log(result);
                         for (membership of result){
                             addMembershipToTable(membership);
                         }
@@ -278,7 +261,6 @@
                     "dataType": "JSON",
                     contentType: "application/json; charset=utf-8",
                     "success":function(result){
-                        //console.log(result);
                         membership.id = result.id
                         addMembershipToTable(membership)
                         clearForm()

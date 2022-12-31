@@ -1,5 +1,7 @@
 import mysql.connector
 import db_config as cfg
+
+
 class membershipDAO:
     connection=""
     cursor =''
@@ -32,6 +34,38 @@ class membershipDAO:
         self.cursor.close()
 
 
+    def createdatabase(self):
+        self.connection = mysql.connector.connect(
+            host=       self.host,
+            user=       self.user,
+            password=   self.password   
+        )
+        self.cursor = self.connection.cursor()
+        sql="create database "+ self.database
+        self.cursor.execute(sql)
+
+        self.connection.commit()
+        self.closeAll()
+
+    #create table for members in db
+    def createtable(self):
+        cursor = self.getcursor()
+        sql="create table membership (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, name varchar(250), membership_type varchar(50), email varchar(250))"
+        cursor.execute(sql)
+
+        self.connection.commit()
+        self.closeAll()
+
+    #create table for admins in db
+    def createtable_users(self):
+        cursor = self.getcursor()
+        sql="create table login_details (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, username varchar(50) UNIQUE, password nvarchar(50))"
+        cursor.execute(sql)
+
+        self.connection.commit()
+        self.closeAll()
+
+    #create new member
     def create(self, values):
         cursor = self.getcursor()
         sql="insert into membership (Name, membership_type, email) values (%s,%s,%s)"
@@ -42,6 +76,7 @@ class membershipDAO:
         self.closeAll()
         return newid
 
+    #create admin entry to database
     def create_logins(self, values):
         cursor = self.getcursor()
         sql="insert into login_details (username, password) values (%s,%s)"
@@ -52,7 +87,7 @@ class membershipDAO:
         self.closeAll()
         return newid
 
-
+    #get member details
     def getAll(self):
         cursor = self.getcursor()
         sql="select * from membership"
@@ -67,7 +102,7 @@ class membershipDAO:
         self.closeAll()
         return returnArray
 
-
+    #get admin details
     def getAllUsers(self):
         cursor = self.getcursor()
         sql="select * from login_details"
@@ -81,7 +116,7 @@ class membershipDAO:
         self.closeAll()
         return returnArray
 
-
+    #serach for member
     def findByID(self, id):
         cursor = self.getcursor()
         sql="select * from membership where id = %s"
@@ -93,7 +128,7 @@ class membershipDAO:
         self.closeAll()
         return returnvalue
 
-
+    # update to database
     def update(self, values):
         cursor = self.getcursor()
         sql="update membership set name= %s,membership_type=%s, email=%s  where id = %s"
@@ -101,7 +136,7 @@ class membershipDAO:
         self.connection.commit()
         self.closeAll()
         
-
+    # delete from database
     def delete(self, id):
         cursor = self.getcursor()
         sql="delete from membership where id = %s"
@@ -114,7 +149,7 @@ class membershipDAO:
         
         print("delete done")
 
-
+    #conert memebrs to dicts
     def convertToDictionary(self, result):
         colnames=['id','Name','membership_type', "email"]
         item = {}
@@ -126,6 +161,7 @@ class membershipDAO:
         
         return item
 
+    #needed to convert amdin users to dicts
     def convertToDictionary2(self, result):
         colnames=['id','username','password']
         item = {}
@@ -137,18 +173,7 @@ class membershipDAO:
         
         return item
 
-    def testLogin(self, values):
-        cursor = self.getcursor()
-        sql = 'SELECT * FROM login_details WHERE username = %s AND password = %s'
-        cursor.execute(sql, values)
-        results = cursor.fetchall()
-        if len(results) > 0:
-            return 1
-        else:
-            return 2
-        
-
-
+    #insert members to database
     def insert_data(self):
         cursor = self.getcursor()
         data = ('John Doe', 'Gold', 'jd@live.ie')
@@ -180,6 +205,7 @@ class membershipDAO:
         membershipDAO.create(data13)
         membershipDAO.create(data14)
 
+    #insert admins to database
     def insert_data_logins(self):
         cursor = self.getcursor()
         data = ('drtest2022', 'abcd1234')
@@ -188,51 +214,29 @@ class membershipDAO:
         membershipDAO.create_logins(data2)
 
 
-    def createtable(self):
-        cursor = self.getcursor()
-        sql="create table membership (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, name varchar(250), membership_type varchar(50), email varchar(250))"
-        cursor.execute(sql)
 
-        self.connection.commit()
-        self.closeAll()
-
-    def createtable_users(self):
-        cursor = self.getcursor()
-        sql="create table login_details (id int AUTO_INCREMENT NOT NULL PRIMARY KEY, username varchar(50) UNIQUE, password nvarchar(50))"
-        cursor.execute(sql)
-
-        self.connection.commit()
-        self.closeAll()
-
-
-    def createdatabase(self):
-        self.connection = mysql.connector.connect(
-            host=       self.host,
-            user=       self.user,
-            password=   self.password   
-        )
-        self.cursor = self.connection.cursor()
-        sql="create database "+ self.database
-        self.cursor.execute(sql)
-
-        self.connection.commit()
-        self.closeAll()
 
 
 membershipDAO = membershipDAO()
 
 if __name__ == "__main__":
-    #membershipDAO.createdatabase()
-    #membershipDAO.createtable()
-    #membershipDAO.insert_data()
-    #membershipDAO.createtable_users()
-    # membershipDAO.insert_data_logins()
+    #create the db for the project
+    membershipDAO.createdatabase()
+    #create the table for members
+    membershipDAO.createtable()
+    #populate membership table with data
+    membershipDAO.insert_data()
+    #create login_details table with admin users for login
+    membershipDAO.createtable_users()
+    #populate login_details table with data
+    membershipDAO.insert_data_logins()
+
+
     #data = ('Sarah Saunders', 'Gold', 'ss1995@live.ie')
     #membershipDAO.create(data)
-    #counted_choices = membershipDAO.countchoices('Chicken Salad')
     #print (counted_choices)
     #membershipDAO.getAllUsers()
-    #data = ('admin1234', 'pwd0000')
+    #data = ('test', 'password')
     #membershipDAO.testLogin(data)
 
     print("sanity")
