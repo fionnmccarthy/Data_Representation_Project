@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, abort, render_template, session, g, redirect, url_for, flash
 import json
 import requests
-import tabulate
 from membershipDAO import membershipDAO
 
 app = Flask(__name__, static_url_path='', static_folder='templates')
