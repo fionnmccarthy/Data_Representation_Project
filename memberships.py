@@ -84,6 +84,7 @@ def create():
     membership['id'] = newId
     return jsonify(membership)
 
+
 #curl  -i -H "Content-Type:application/json" -X PUT -d "{\"name\":\"Tim Ryan\",\"membership_type\":\"gold\",\"email\":hello2@live.ie}" http://127.0.0.1:5000/memberships/1
 @app.route('/memberships/<int:id>', methods=['PUT'])
 def update(id):
