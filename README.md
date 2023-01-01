@@ -9,6 +9,8 @@ links to two database tables: one which holds members details and another for ad
 
 The web API which I designed is for the Atlantic Technical University's Manchester United Supporters Club. It is designed for admin of the club to create, update and delete members from the clubs database. In order to enter the mmebers areas, it is required to pass the login authentification, which details are stored in the database table login_details. 
 
+I have also linbked into a third party API data which gets data for the Manchester United fixtures in 2021/2022 season and displays them at fixtures.html or fixtures2122. 
+
 
 ![xplotoutput](templates/images/standard.png)
 

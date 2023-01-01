@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, abort, render_template, session, g, redirect, url_for, flash
-
+import json
+import requests
+import tabulate
 from membershipDAO import membershipDAO
 
 app = Flask(__name__, static_url_path='', static_folder='templates')
@@ -20,6 +22,11 @@ def login_page():
 @app.route('/admin')
 def admin():
     return render_template('/index.html')
+
+# fixtures page
+@app.route('/fixtures2122')
+def fixtures():
+    return render_template('/fixtures.html')
 
 
 # validate login details from database
@@ -108,6 +115,12 @@ def delete(id):
     membershipDAO.delete(id)
     return jsonify({"done":True})
 
+
+#curl "http://127.0.0.1:5000/fixturesdata"
+@app.route('/fixturesdata')
+def getFixtures():
+    fixtures = requests.get('https://fixturedownload.com/feed/json/epl-2021/man-utd').json()
+    return jsonify(fixtures)
 
 
 
