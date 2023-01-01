@@ -13,6 +13,7 @@ I have also linbked into a third party API data which gets data for the Manchest
 
 
 The web API is also hosted at pythonanywhere.com, at the following link: https://fionnmccarthy.pythonanywhere.com/
+However, I had issues getting the data to come across to the web pages for the members and teh fixtures. The login worked fine here. It all worked fine locally.
 
 
 ![xplotoutput](templates/images/standard.png)
